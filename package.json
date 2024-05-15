@@ -8,6 +8,7 @@
     "backend": "cd backend && npm start"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
     "jsonwebtoken": "^9.0.2",
     "node": "^20.13.1",
     "truffle": "^5.11.5"

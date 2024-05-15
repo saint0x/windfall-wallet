@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.5.16;
 
 contract Wallet {
     address public executor;
@@ -21,7 +20,7 @@ contract Wallet {
         _;
     }
 
-    constructor() {
+    constructor() public {
         executor = msg.sender;
         isMember[msg.sender] = true;
     }
@@ -36,7 +35,8 @@ contract Wallet {
         require(balances[msg.sender] >= amount, "Insufficient balance");
         balances[msg.sender] -= amount;
         totalBalance -= amount;
-        payable(msg.sender).transfer(amount);
+        address payable user = address(uint160(msg.sender));
+        user.transfer(amount);
         emit FundsWithdrawn(msg.sender, amount);
     }
 

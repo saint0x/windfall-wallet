@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.5.16;
 
 contract MultisigWallet {
     address[] public owners;
@@ -35,7 +35,7 @@ contract MultisigWallet {
         _;
     }
 
-    constructor(address[] memory _owners, uint256 _numConfirmationsRequired) {
+    constructor(address[] memory _owners, uint256 _numConfirmationsRequired) public {
         require(_owners.length > 0, "Owners required");
         require(_numConfirmationsRequired > 0 && _numConfirmationsRequired <= _owners.length, "Invalid number of confirmations");
         for (uint256 i = 0; i < _owners.length; i++) {
@@ -48,7 +48,7 @@ contract MultisigWallet {
         numConfirmationsRequired = _numConfirmationsRequired;
     }
 
-    receive() external payable {
+    function() external payable {
         emit Deposit(msg.sender, msg.value, address(this).balance);
     }
 
@@ -74,7 +74,7 @@ contract MultisigWallet {
 
     function executeTransaction(uint256 transactionId) public onlyOwner transactionExists(transactionId) notExecuted(transactionId) {
         Transaction storage transaction = transactions[transactionId];
-        (bool success, ) = transaction.destination.call{value: transaction.value}("");
+        (bool success, ) = transaction.destination.call.value(transaction.value)("");
         if (success) {
             transaction.executed = true;
             emit Execution(transactionId);
